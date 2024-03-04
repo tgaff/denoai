@@ -44,6 +44,9 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem "langchainrb_rails", "~> 0.1.7"
+gem "ruby-openai"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
@@ -61,4 +64,3 @@ group :development do
   # gem "spring"
   gem 'annotate'
 end
-
