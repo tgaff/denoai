@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_04_080006) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_04_080407) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -22,4 +22,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_04_080006) do
     t.index ["name"], name: "index_libraries_on_name"
   end
 
+  create_table "texts", force: :cascade do |t|
+    t.text "content"
+    t.bigint "library_id", null: false
+    t.string "type"
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.vector "embedding", limit: 1536
+    t.index ["library_id"], name: "index_texts_on_library_id"
+  end
+
+  add_foreign_key "texts", "libraries"
 end
