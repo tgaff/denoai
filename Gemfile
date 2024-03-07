@@ -46,6 +46,7 @@ gem "bootsnap", require: false
 
 gem "langchainrb_rails", "~> 0.1.7"
 gem "ruby-openai"
+gem "neighbor"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -64,5 +65,3 @@ group :development do
   # gem "spring"
   gem 'annotate'
 end
-gem "neighbor"
-gem "ruby-openai"
