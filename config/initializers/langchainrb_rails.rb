@@ -2,6 +2,10 @@
 
 LangchainrbRails.configure do |config|
   config.vectorsearch = Langchain::Vectorsearch::Pgvector.new(
-    llm: Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
+    llm: Langchain::LLM::OpenAI.new(
+      api_key: ENV["OPENAI_API_KEY"],
+      # using text-embedding-3-small because the default ada-2 fails due to a bug in inappropriately sending dimensions
+      default_options: { embeddings_model_name: "text-embedding-3-small" }
+    )
   )
 end
