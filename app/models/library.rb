@@ -12,4 +12,5 @@
 #  index_libraries_on_name  (name)
 #
 class Library < ApplicationRecord
+  has_many :texts
 end
