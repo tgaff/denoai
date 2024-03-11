@@ -8,6 +8,14 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+def apply_texts(lib, texts)
+  texts.each do |text_def|
+    txt = lib.texts.find_or_create_by(name: text_def[:name])
+    txt.content = File.read(Rails.root.join('db', 'seeds', text_def[:file]))
+    txt.save
+  end
+end
+
 lib = Library.find_or_create_by(name: "test")
 
 test_texts = [
@@ -16,12 +24,19 @@ test_texts = [
     {name: "About Company", file: "vhi_about.txt"},
 ]
 
-test_texts.each do |text_def|
-  txt = lib.texts.find_or_create_by(name: text_def[:name])
-  txt.content = File.read(Rails.root.join('db', 'seeds', text_def[:file]))
-  txt.save
-end
+apply_texts(lib, test_texts)
 
+puts "Number of text records for test: [#{lib.texts.count}]"
+puts "Total text records: [#{Text.count}]"
 
+lib = Library.find_or_create_by(name: "test2")
+
+test_texts = [
+  {name: "Farming", file: "2rivers_farming.txt"},
+  {name: "Old Oak Wines", file: "2rivers_old_oak_wines.txt"},
+  {name: "Leather", file: "2rivers_leather.txt"}
+]
+
+apply_texts(lib, test_texts)
 puts "Number of text records for test: [#{lib.texts.count}]"
 puts "Total text records: [#{Text.count}]"
