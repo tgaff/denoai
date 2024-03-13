@@ -65,3 +65,5 @@ group :development do
   # gem "spring"
   gem 'annotate'
 end
+
+gem "tailwindcss-rails", "~> 2.3"
