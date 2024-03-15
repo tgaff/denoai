@@ -107,6 +107,8 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
+    heroicon (1.0.0)
+      rails (>= 5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.0.1)
@@ -289,6 +291,7 @@ DEPENDENCIES
   annotate
   bootsnap
   debug
+  heroicon (~> 1.0)
   importmap-rails
   jbuilder
   langchainrb_rails (~> 0.1.7)

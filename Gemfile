@@ -67,3 +67,5 @@ group :development do
 end
 
 gem "tailwindcss-rails", "~> 2.3"
+
+gem "heroicon", "~> 1.0"
