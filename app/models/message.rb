@@ -20,4 +20,24 @@
 class Message < ApplicationRecord
   belongs_to :chat
   validates :text, presence: true
+
+
+  def chat_role
+    is_bot? ? "assistant" : "user"
+  end
+
+  def as_llm_chat_message
+    { role: chat_role, content: text }
+  end
+  
+  def run_ai
+    convo = chat.messages.map(&:as_llm_chat_message)
+
+    thread = Langchain::Thread.new
+    llm = Langchain::LLM::OpenAI.new(
+      api_key: ENV["OPENAI_API_KEY"],
+    )
+
+    llm.chat(messages: convo).completion
+  end
 end

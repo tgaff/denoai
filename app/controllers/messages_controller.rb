@@ -13,6 +13,19 @@ class MessagesController < ApplicationController
         text: @message.text,
       }
     )
+ 
+    # this really doesn't belong in the controller, but we're still hackin
+    ai_res = @message.run_ai
+    if ai_res 
+      @message = @chat.messages.create(text: ai_res, is_bot: true)
+
+      @message.broadcast_append_later_to(@chat, partial: 'messages/message_left',
+      locals: {
+        text: @message.text,
+      }
+    )
+
+    end
   end
 
   private

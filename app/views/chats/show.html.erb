@@ -29,7 +29,11 @@
     <!-- the messages in the chat -->
     <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
       <% @messages.each do |msg| %>
-        <%= render partial: "messages/message_right", locals: { text: msg.text, chat: @chat } %>
+        <% if msg.is_bot? %>
+          <%= render partial: "messages/message_left", locals: { text: msg.text, chat: @chat } %>
+        <% else %>
+          <%= render partial: "messages/message_right", locals: { text: msg.text, chat: @chat } %>
+        <% end %>
       <% end %>
 
     </div>
