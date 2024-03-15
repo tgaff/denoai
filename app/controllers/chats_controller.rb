@@ -62,6 +62,7 @@ class ChatsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_chat
       @chat = Chat.find(params[:id])
+      @messages = @chat.messages.order(:created_at)
     end
 
     # Only allow a list of trusted parameters through.
