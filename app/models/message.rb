@@ -29,15 +29,48 @@ class Message < ApplicationRecord
   def as_llm_chat_message
     { role: chat_role, content: text }
   end
+
   
   def run_ai
     convo = chat.messages.map(&:as_llm_chat_message)
 
-    thread = Langchain::Thread.new
+    # thread = Langchain::Thread.new
     llm = Langchain::LLM::OpenAI.new(
       api_key: ENV["OPENAI_API_KEY"],
     )
 
-    llm.chat(messages: convo).completion
+    # llm.chat(messages: convo).ask(question: text)
+  
+    # def ask(question:, k: 4, &block)
+    # search_results = similarity_search(query: text, k: 4)
+    
+    search_results = chat.library.texts.similarity_search(text, k: 4)
+
+    context = search_results.map do |sr|
+      sr.content.to_s
+    end
+    context = context.join("\n---\n")
+    # debugger
+
+
+    prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text, context: context)
+
+    messages = [{role: "user", content: prompt}] + convo
+    response = llm.chat(messages: messages)
+
+    response.context = context
+    response.completion
+
   end
+
+  # def run_ai
+  #   convo = chat.messages.map(&:as_llm_chat_message)
+
+  #   thread = Langchain::Thread.new
+  #   llm = Langchain::LLM::OpenAI.new(
+  #     api_key: ENV["OPENAI_API_KEY"],
+  #   )
+
+  #   llm.chat(messages: convo).ask(question: text)
+  # end
 end

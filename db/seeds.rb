@@ -38,5 +38,6 @@ test_texts = [
 ]
 
 apply_texts(lib, test_texts)
+
 puts "Number of text records for test: [#{lib.texts.count}]"
 puts "Total text records: [#{Text.count}]"
