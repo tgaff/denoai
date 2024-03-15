@@ -1,5 +1,6 @@
 class ChatsController < ApplicationController
   before_action :set_chat, only: %i[ show edit update destroy ]
+  before_action :set_libraries
 
   # GET /chats or /chats.json
   def index
@@ -66,5 +67,9 @@ class ChatsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def chat_params
       params.require(:chat).permit(:title, :library_id)
+    end
+
+    def set_libraries
+      @libraries = Library.all
     end
 end

@@ -16,7 +16,7 @@ def apply_texts(lib, texts)
   end
 end
 
-lib = Library.find_or_create_by(name: "test")
+lib = Library.find_or_create_by(name: "test - company")
 
 test_texts = [
     {name: "Employee Handbook", file: "emp_handbook.txt"},
@@ -29,7 +29,7 @@ apply_texts(lib, test_texts)
 puts "Number of text records for test: [#{lib.texts.count}]"
 puts "Total text records: [#{Text.count}]"
 
-lib = Library.find_or_create_by(name: "test2")
+lib = Library.find_or_create_by(name: "test - Two Rivers")
 
 test_texts = [
   {name: "Farming", file: "2rivers_farming.txt"},
