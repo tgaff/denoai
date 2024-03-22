@@ -2,14 +2,14 @@
 #
 # Table name: texts
 #
-#  id         :bigint           not null, primary key
-#  content    :text
-#  embedding  :vector(1536)
-#  name       :string           not null
-#  type       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  library_id :bigint           not null
+#  id          :bigint           not null, primary key
+#  content     :text
+#  embedding   :vector(1536)
+#  name        :string           not null
+#  source_type :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  library_id  :bigint           not null
 #
 # Indexes
 #
