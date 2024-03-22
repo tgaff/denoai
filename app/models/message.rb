@@ -36,7 +36,7 @@ class Message < ApplicationRecord
 
     # thread = Langchain::Thread.new
     llm = Langchain::LLM::OpenAI.new(
-      api_key: ENV["OPENAI_API_KEY"],
+      api_key: Rails.application.credentials.dig(:openai_key),
     )
 
     # llm.chat(messages: convo).ask(question: text)
@@ -50,8 +50,6 @@ class Message < ApplicationRecord
       sr.content.to_s
     end
     context = context.join("\n---\n")
-    # debugger
-
 
     prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text, context: context)
 
