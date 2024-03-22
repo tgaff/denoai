@@ -21,6 +21,9 @@ FROM base as build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config
 
+# git for cloning repo to scan markdown
+RUN apt-get -y install git
+
 # Install application gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
