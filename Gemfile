@@ -71,3 +71,5 @@ gem "tailwindcss-rails", "~> 2.3"
 gem "heroicon", "~> 1.0"
 
 gem "good_job", "~> 3.26"
+
+gem "hotwire-livereload", "~> 1.3", :group => :development
