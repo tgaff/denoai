@@ -24,7 +24,6 @@ class MessagesController < ApplicationController
         text: @message.text,
       }
     )
-
     end
   end
 
