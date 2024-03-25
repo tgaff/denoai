@@ -1,69 +1,61 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
-
-<%= turbo_stream_from @chat %>
-
-  <!-- Chat dialog -->
-  <div class="fixed bottom-3 right-14 bg-white text-blue-500 flex-1 p:2 sm:p-6 justify-between flex flex-col h-[calc(100%-1rem)] max-h-[1000px]">
-    <% # as long as you're here, some of the above tailwind height customs are pretty cool. %>
-    <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
-      <div class="relative flex items-center space-x-4">
-        <div class="flex flex-col leading-tight">
-          <span class="text-lg text-gray-600">Support chat for</span>
-          <div class="text-2xl mt-1 flex items-center">
-            <span class="text-gray-700 mr-3"><%= @chat.title %></span>
-          </div>
+<!-- Chat dialog -->
+<div class="w-3/4 bottom-3 bg-white text-blue-500 justify-between flex flex-col h-[calc(100%-1rem)] max-h-[1000px]">
+  <% # as long as you're here, some of the above tailwind height customs are pretty cool. %>
+  
+  <%= turbo_stream_from @chat %>
+  <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+    <div class="relative flex items-center space-x-4">
+      <div class="flex flex-col leading-tight">
+        <span class="text-lg text-gray-600">Support chat for</span>
+        <div class="text-2xl mt-1 flex items-center">
+          <span class="text-gray-700 mr-3"><%= @chat.title %></span>
         </div>
       </div>
-      <div class="flex items-center space-x-2">
-        <button type="button" class="inline-flex items-center justify-center rounded-lg border h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
-        <%= heroicon "x-mark" %>
-
-        </button>
-      </div>
     </div>
+    <div class="flex items-center space-x-2">
+      <button type="button" class="inline-flex items-center justify-center rounded-lg border h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+      <%= heroicon "x-mark" %>
 
-    <!-- the messages in the chat -->
-    <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-      <% @messages.each do |msg| %>
+      </button>
+    </div>
+  </div>
+
+  <!-- the messages in the chat -->
+  <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+    <% @messages.each do |msg| %>
+      <% cache msg do %>
         <% if msg.is_bot? %>
           <%= render partial: "messages/message_left", locals: { text: msg.text, chat: @chat } %>
         <% else %>
           <%= render partial: "messages/message_right", locals: { text: msg.text, chat: @chat } %>
         <% end %>
       <% end %>
+    <% end %>
 
-    </div>
-    <!-- new message input form -->
-    <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
+  </div>
+  <!-- new message input form -->
+  <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
 
-      <%= form_with model: [@chat, @chat.messages.build], data: { controller: 'form-reset', action: 'turbo:submit-end->form-reset#reset'} do |f| %>
-        <div class="relative flex">
-          <%= f.text_field :text, placeholder: "Type your question", class: "w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600  bg-gray-200 rounded-md py-3" %>
-          <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+    <%= form_with model: [@chat, @chat.messages.build], data: { controller: 'form-reset', action: 'turbo:submit-end->form-reset#reset'} do |f| %>
+      <div class="relative flex">
+        <%= f.text_field :text, placeholder: "Type your question", class: "w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600  bg-gray-200 rounded-md py-3" %>
+        <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
 
-            <%= button_tag type: :submit, class: "inline-flex items-center justify-center rounded-lg px-2 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 transform rotate-90">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-              </svg>
-            <% end %>
-          </div>
-
+          <%= button_tag type: :submit, class: "inline-flex items-center justify-center rounded-lg px-2 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 transform rotate-90">
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+            </svg>
+          <% end %>
         </div>
-      <% end %>
 
-    </div>
+      </div>
+    <% end %>
+
   </div>
+</div>
 
-
-
-    <%= link_to "Edit this chat", edit_chat_path(@chat), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to "Destroy this chat", chat_path(@chat), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
-    </div>
-    <%= link_to "Back to chats", chats_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-  </div>
+<div class="w-1/4 flex flex-col p-8">  
+  <%= link_to "Edit this chat", edit_chat_path(@chat), class: "block w-full mx-auto text-center mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium"%>
+  <%= button_to "Destroy this chat", chat_path(@chat), method: :delete, class: "w-full text-center mx-auto mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+  <%= link_to "Back to chats", chats_path, class: "block w-full text-center mx-auto mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
 </div>
