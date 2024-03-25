@@ -17,7 +17,19 @@ def apply_texts(lib, texts)
   end
 end
 
-lib = Library.find_or_create_by(name: "test - company")
+# temporary renames - renaming rather than recreating to save on credits ha
+def rename_lib(from:, to:)
+  lib = Library.find_by(name: from)
+  return true unless lib
+  lib.name = to
+  lib.save!    
+end
+rename_lib(from: 'test - company', to: "Vartend Heavy Industries")
+rename_lib(from: 'test - Two Rivers', to: "Two Rivers")
+rename_lib(from: 'lz', to: "LZ")
+
+
+lib = Library.find_or_create_by(name: "Vartend Heavy Industries")
 
 test_texts = [
   {name: "Employee Handbook", file: "emp_handbook.txt"},
@@ -30,7 +42,7 @@ apply_texts(lib, test_texts)
 puts "Number of text records for test: [#{lib.texts.count}]"
 puts "Total text records: [#{Text.count}]"
 
-lib = Library.find_or_create_by(name: "test - Two Rivers")
+lib = Library.find_or_create_by(name: "Two Rivers")
 
 test_texts = [
   {name: "Farming", file: "2rivers_farming.txt"},
