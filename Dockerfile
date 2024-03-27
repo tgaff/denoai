@@ -21,9 +21,6 @@ FROM base as build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config
 
-# git for cloning repo to scan markdown
-RUN apt-get -y install git
-
 # Install application gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
@@ -42,6 +39,10 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile --trace
 
 # Final stage for app image
 FROM base
+
+# git for cloning repo to scan markdown
+RUN apt-get update -qq && \
+  apt-get install -y git
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
