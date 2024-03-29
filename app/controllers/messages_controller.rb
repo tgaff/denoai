@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   def create
     @message = @chat.messages.create(message_params)
     respond_to do |format|
-      # format.turbo_stream
+      format.turbo_stream { render partial: 'message_submit' }
       format.html { head :no_content }
     end
 
@@ -14,8 +14,17 @@ class MessagesController < ApplicationController
       }
     )
  
-    # this really doesn't belong in the controller, but we're still hackin
-    ai_res = @message.run_ai
+    run_ai
+  end
+
+  def run_ai
+    # this really doesn't belong in the controller, but we're still hackin    
+    ai_res = if ENV.fetch('AI', "").downcase == 'disabled'
+      "skipping AI processing for rapid testing"
+    else
+      @message.run_ai
+    end
+    
     if ai_res 
       @message = @chat.messages.create(text: ai_res, is_bot: true)
 

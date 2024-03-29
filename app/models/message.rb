@@ -21,6 +21,7 @@ class Message < ApplicationRecord
   belongs_to :chat
   validates :text, presence: true
 
+  scope :persisted, ->{ where.not(id: nil) }
 
   def chat_role
     is_bot? ? "assistant" : "user"
@@ -32,7 +33,7 @@ class Message < ApplicationRecord
 
   
   def run_ai
-    convo = chat.messages.map(&:as_llm_chat_message)
+    convo = chat.messages.persisted.map(&:as_llm_chat_message)
 
     # thread = Langchain::Thread.new
     llm = Langchain::LLM::OpenAI.new(
@@ -54,6 +55,7 @@ class Message < ApplicationRecord
     prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text, context: context)
 
     messages = [{role: "user", content: prompt}] + convo
+    debugger
     response = llm.chat(messages: messages)
 
     response.context = context
