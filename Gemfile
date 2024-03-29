@@ -44,6 +44,7 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# temporary lock due to langchainrb_rails Zeitwork error on 0.9.5, next version should allow a jump to 0.10+
 gem "langchainrb", "0.9.4"
 gem "langchainrb_rails", "~> 0.1.8"
 gem "ruby-openai"

@@ -55,7 +55,6 @@ class Message < ApplicationRecord
     prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text, context: context)
 
     messages = [{role: "user", content: prompt}] + convo
-    debugger
     response = llm.chat(messages: messages)
 
     response.context = context
