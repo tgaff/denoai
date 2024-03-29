@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   def create
     @message = @chat.messages.create(message_params)
     respond_to do |format|
-      format.turbo_stream { render partial: 'message_submit' }
+      format.turbo_stream
       format.html { head :no_content }
     end
 
@@ -26,11 +26,11 @@ class MessagesController < ApplicationController
     end
     
     if ai_res 
-      @message = @chat.messages.create(text: ai_res, is_bot: true)
+      llm_response = @chat.messages.create(text: ai_res, is_bot: true)
 
-      @message.broadcast_append_later_to(@chat, partial: 'messages/message_left',
+      llm_response.broadcast_append_later_to(@chat, partial: 'messages/message_left',
       locals: {
-        text: @message.text,
+        text: llm_response.text,
       }
     )
     end
