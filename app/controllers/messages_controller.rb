@@ -8,18 +8,18 @@ class MessagesController < ApplicationController
       format.html { head :no_content }
     end
 
-    @message.broadcast_append_later_to(@chat, partial: 'messages/message_right',
-      locals: {
-        text: @message.text,
-      }
-    )
- 
+    # @message.broadcast_append_later_to(@chat, partial: 'messages/message_right',
+    #   locals: {
+    #     text: @message.text,
+    #   }
+    # ) 
     run_ai
   end
 
   def run_ai
     # this really doesn't belong in the controller, but we're still hackin    
     ai_res = if ENV.fetch('AI', "").downcase == 'disabled'
+      sleep 2
       "skipping AI processing for rapid testing"
     else
       @message.run_ai

@@ -1,3 +1,13 @@
+<%= turbo_stream.append "messages" do %>
+  <% # render user's message back to them %>
+  <%= render partial: 'messages/message_right', locals: {text: @message.text } %>
+  
+  <% # render a fake "..." message for the AI %>
+  <%= render partial: 'messages/message_left', locals: {is_loading: true } %>
+  
+<% end %>
+
+<% # reset message form %>
 <%= turbo_stream.update "new_message_form" do %>
   <%= render partial: 'chats/message_submit' %>
 <% end %>

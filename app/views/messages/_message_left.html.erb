@@ -1,13 +1,23 @@
-<div class="chat-message">
+<% unless local_assigns[:is_loading] %>
+  <%= turbo_stream.remove "response_is_loading" %> 
+<% end %>
+
+<%= content_tag(:div, class: 'chat-message', id: local_assigns[:is_loading] ? 'response_is_loading' : nil) do %>
   <div class="flex items-end">
     <div class="flex flex-col space-y-2 text-xs mx-2 order-2 items-start">
       <div>
-        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-700 w-3/4">
-          <%= simple_format auto_link(text, html: { :target => '_blank', class: 'text-blue-500 underline' }) %>
-        </span>
+        <% if local_assigns[:is_loading] %>
+          <span class="animate-bounce px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-700 w-3/4">
+            ...
+          </span>
+        <% else %>
+          <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-700 w-3/4">
+            <%= simple_format auto_link(text, html: { :target => '_blank', class: 'text-blue-500 underline' }) %>
+          </span>
+        <%end%>
       </div>
     </div>
 
     <%= heroicon 'cpu-chip', variant: :mini, options: { class:'h-6 min-w-6 order-1 text-gray-400' } %>
   </div>
-</div>
+<% end %>
