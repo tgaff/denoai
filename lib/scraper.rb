@@ -3,6 +3,7 @@ require 'capybara/dsl'
 require "capybara/cuprite"
 require 'active_support'
 require 'active_support/core_ext'
+require 'debug'
 
 class Scraper
   attr_reader :texts, :readers, :processed_addresses, :unprocessed_addresses
@@ -37,13 +38,15 @@ class Scraper
   def scrape_internal(url)
     p = PageReader.new(url)
     @p = p
+    p.text if p.text.blank? # retry once if empty
     debugger if p.text.blank?
     @texts[url] = p.text
-    
+        
     links = filter_links p.links
     links.each do |link|
-      unless processed_addresses.include? link
-        unprocessed_addresses << link        
+      no_hash_link = link.split('#').first
+      unless processed_addresses.include? no_hash_link
+        unprocessed_addresses << no_hash_link        
       end
     end
   end
@@ -88,11 +91,17 @@ class PageReader
   end
 
   def links  
-     all('a', visible: :all).map { |node| node['href'] }.uniq
+    all('a', visible: :all).
+      map { |node| node['href'] }.
+      uniq.
+      reject { |l| l.nil? || l.empty? }
   end
 
   def text
+    all('div', wait: 30) # just to ensure its ready
     body = find("body")
+    body.text # just to ensure page is ready
+
     locators = ['div.content', 'article', 'section']
     possible_content_nodes = []
 
@@ -107,11 +116,13 @@ class PageReader
     possible_content_nodes.each do |node|
       text_chunks.push node.text
     end
-    # cleanup_content(text_chunks)
+    cleanup_content(text_chunks)
 
     @texts = text_chunks
   end
 
+  # due to multiple valid text locators we can sometimes end up in a situation where one locator is inside another
+  # this method finds the duplicate sub-text and removes it's node so it's only contained in the larger one
   def cleanup_content(text_chunks)
     # remove duplicates
     remove_indexes = []
@@ -132,14 +143,4 @@ class PageReader
     remove_indexes.sort.reverse.each { |ind| text_chunks.delete_at(ind) }
     text_chunks
   end
-end
-
-url = "https://qa.labzero.com/blog"
-exclusion_patterns = ["unsplash.com", /twitter/]
-s = Scraper.new(url, link_exclusion_patterns: exclusion_patterns, link_inclusion_patterns: ['qa.labzero.com'])
-s.scrape(limit:900)
-
-s.texts.each do |t|
-  puts t
-  puts "\n"
 end
