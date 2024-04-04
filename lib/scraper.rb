@@ -26,7 +26,8 @@ class Scraper
     
     limit.times do |run_num|
       url = @unprocessed_addresses.first
-      puts "working run number: #{run_num + 1}: #{url}"
+      return if url.nil?
+      puts "working run number: #{run_num + 1}: '#{url}'"
       scrape_internal(url)
 
       # done, mark it down
@@ -39,11 +40,12 @@ class Scraper
     p = PageReader.new(url)
     @p = p
     p.text if p.text.blank? # retry once if empty
-    debugger if p.text.blank?
+    
     @texts[url] = p.text
         
     links = filter_links p.links
     links.each do |link|
+      puts link
       no_hash_link = link.split('#').first
       unless processed_addresses.include? no_hash_link
         unprocessed_addresses << no_hash_link        
@@ -52,12 +54,13 @@ class Scraper
   end
 
   def filter_links(links)
+    links = links.filter(&:present?)
     return links if @link_exclusion_patterns.empty? && @link_inclusion_patterns.empty?
 
     temp = []
     unless @link_inclusion_patterns.empty?
       temp = links.filter do |link|
-      @link_inclusion_patterns.any? { |pat| link.match pat }
+        @link_inclusion_patterns.any? { |pat| link.match pat }
       end
     end
     temp.filter do |link|
