@@ -12,5 +12,6 @@
 #  index_libraries_on_name  (name)
 #
 class Library < ApplicationRecord
-  has_many :texts
+  has_many :texts, dependent: :destroy
+  has_many :chats, dependent: :destroy
 end

@@ -40,7 +40,7 @@ class Scraper
     p = PageReader.new(url)
     @p = p
     p.text if p.text.blank? # retry once if empty
-    
+    title = "#{p.title[0..25]} #{url}"
     @texts[url] = p.text
         
     links = filter_links p.links
