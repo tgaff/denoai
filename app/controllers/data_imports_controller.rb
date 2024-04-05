@@ -23,6 +23,7 @@ class DataImportsController < ApplicationController
 
   ALLOWED_WORK_MAPPINGS = {
     markdown: ScanLzGuidesJob,
+    lz_site: ScanLzSiteJob
   }
   # POST /data_imports
   def create
