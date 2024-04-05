@@ -58,11 +58,9 @@ class Message < ApplicationRecord
     response = llm.chat(messages: messages)
 
     response.context = context
-    puts "-------------------------------------------"
-    puts context
-    puts "-------------------------------------------"
-    response.completion
+    logger.debug "-------------CONTEXT-------------\n" + context + "\n-------------------------------------------"
 
+    response.completion
   end
 
   # def run_ai

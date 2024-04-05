@@ -50,6 +50,8 @@ gem "langchainrb_rails", "~> 0.1.8"
 gem "ruby-openai"
 gem "neighbor"
 gem 'rails_autolink'
+gem 'cuprite'
+gem 'capybara'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
