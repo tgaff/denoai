@@ -25,8 +25,7 @@ class ScanLzSiteJob < ApplicationJob
     s.scrape(limit: LIMIT)
   
     s.texts.each do |t|
-      puts t
-      puts "\n"
+      logger.info t
     end
     return s.texts
   end

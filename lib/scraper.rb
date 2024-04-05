@@ -27,13 +27,19 @@ class Scraper
     limit.times do |run_num|
       url = @unprocessed_addresses.first
       return if url.nil?
-      puts "working run number: #{run_num + 1}: '#{url}'"
+      logger.info "working run number: #{run_num + 1}: '#{url}'"
       scrape_internal(url)
 
       # done, mark it down
       @processed_addresses << url
       @unprocessed_addresses.delete url
     end
+  end
+
+  private
+
+  def logger
+    Rails.logger
   end
 
   def scrape_internal(url)
@@ -45,7 +51,7 @@ class Scraper
         
     links = filter_links p.links
     links.each do |link|
-      puts link
+      logger.info link
       no_hash_link = link.split('#').first
       unless processed_addresses.include? no_hash_link
         unprocessed_addresses << no_hash_link        
@@ -87,7 +93,7 @@ class PageReader
     begin
       visit url
     rescue Ferrum::PendingConnectionsError
-      puts "page didn't load in time, retrying"
+      logger.warn "page didn't load in time, retrying: '#{url}'"
       sleep 0.5
       visit url
     end
