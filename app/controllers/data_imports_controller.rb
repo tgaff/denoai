@@ -4,7 +4,7 @@ class DataImportsController < ApplicationController
 
   # GET /data_imports
   def index
-    
+    @libraries = Library.all.select(:id, :name)    
   end
 
   # GET /data_imports/1
@@ -20,18 +20,47 @@ class DataImportsController < ApplicationController
   def edit
   end
 
-
+  # mappings for the type of form
+  JSON_IMPORT = 'json_import'
+  RUN_TASK = 'run_task'
   ALLOWED_WORK_MAPPINGS = {
     markdown: ScanLzGuidesJob,
     lz_site: ScanLzSiteJob
   }
   # POST /data_imports
   def create
-    task = ALLOWED_WORK_MAPPINGS[data_import_params&.to_sym]
-    if task.present?
-      task.perform_later
-      redirect_to data_imports_path, notice: "Task enqueued"
-    else
+    puts "---------------------------------"
+    # puts import_type_param
+    puts params.to_unsafe_hash
+
+    # doing something weird - successful paths should throw done or 
+    # we'll render unprocessable_entity
+    catch(:done) do
+      if import_type_param == JSON_IMPORT
+        @library = Library.find(direct_import_params[:library])
+        begin
+          Rails.logger.info JSON.parse(direct_import_params[:json])
+        rescue StandardError =>  e
+          puts e
+          render :index, status: :unprocessable_entity
+        end
+        # do something with the json here
+        redirect_to data_imports_path, notice: "Thanks for JSON"
+
+        throw(:done)
+      elsif import_type_param == RUN_TASK
+        task = ALLOWED_WORK_MAPPINGS[task_params&.to_sym]
+
+        if task.present?
+          # task.perform_later
+          redirect_to data_imports_path, notice: "Task enqueued"
+        else
+          render :index, status: :unprocessable_entity
+        end
+        throw(:done)
+      end
+
+      # fallback if neither option gets a "done"
       render :index, status: :unprocessable_entity
     end
   end
@@ -52,14 +81,17 @@ class DataImportsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_data_import
-      @data_import = DataImport.find(params[:id])
+    def import_type_param
+      params.fetch(:type, nil)
+    end
+    
+    # Only allow a list of trusted parameters through.
+    def task_params
+      params.fetch(:task)
     end
 
-    # Only allow a list of trusted parameters through.
-    def data_import_params
-      params.fetch(:task)
+    def direct_import_params
+      params.slice(:library, :json, :authenticity_token)
     end
 
     def authenticate_good_job

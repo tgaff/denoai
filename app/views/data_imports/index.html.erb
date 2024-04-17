@@ -3,20 +3,24 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
+  <div class="flex flex-col basis-4 justify-between items-start ">    
+    <h1 class="font-bold text-4xl block py-3">Automated text scans</h1>
+    <%= button_to "Run markdown import", data_imports_path, params: {task: 'markdown', type: 'run_task'}, class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <%= button_to "Run Site import", data_imports_path, params: {task: 'lz_site', type: 'run_task'}, class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  </div>
   <div class="flex flex-col basis-4 justify-between items-start ">
-    <h1 class="font-bold text-4xl block">Data imports</h1>
-    <%= button_to "Run markdown import", data_imports_path, params: {task: 'markdown'}, class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
-    <%= button_to "Run Site import", data_imports_path, params: {task: 'lz_site'}, class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
-<%
-=begin%>
-
-    <%= button_to "Run markdown import", data_imports_path, params: {task: 'markdown'}, class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %> 
-<%
-=end%>
-  </div>
-
-
-  <div id="data_imports" class="min-w-full">
+    <h1 class="font-bold text-4xl block py-3">Text uploads</h1>
     
+    <%= form_with url: data_imports_path do |f| %>
+      <%= f.hidden_field :type, value: 'json_import' %>
+      
+      <%= f.label :library, "Select a Library", class: "block px-5 text-sm font-medium text-gray-700" %>
+      <%= f.select :library, options_from_collection_for_select(@libraries, "id", "name"), { id: "library_select" }, class: "rounded-md my-4 py-3 px-5 text-blue-600 block font-medium min-w-80" %>
+    
+      <%= f.label :json, "Paste JSON to import", class: "block px-5 text-sm font-medium text-gray-700" %>
+      <%= f.text_area :json, rows: 5, cols: 50, class: "rounded-md my-4 py-3 px-5 block font-medium min-w-80" %>
+
+      <%= f.submit "Import", class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <% end %>
   </div>
-</div>
+</div> 
