@@ -93,11 +93,4 @@ class DataImportsController < ApplicationController
     def direct_import_params
       params.slice(:library, :json, :authenticity_token)
     end
-
-    def authenticate_good_job
-      authenticate_or_request_with_http_basic do |username, password|
-        username == Rails.application.credentials.dig(:good_job, :username) &&
-          password == Rails.application.credentials.dig(:good_job, :password)
-      end
-    end  
 end

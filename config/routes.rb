@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :json_exports, only: [:index], param: :library_id do
+    collection do 
+      get 'download'
+    end
+  end
   resources :data_imports
   get 'messages/create'
   resources :chats do

@@ -23,4 +23,6 @@
       <%= f.submit "Import", class: "rounded-lg my-4 py-3 px-5 bg-blue-600 text-white block font-medium" %>
     <% end %>
   </div>
+
+  <%= turbo_frame_tag 'data_exports', src: json_exports_path %>  
 </div> 
