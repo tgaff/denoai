@@ -7,21 +7,26 @@ class JsonExportsController < ApplicationController
     @libraries = Library.all.select(:id, :name)
   end
 
+
+  def show
+    set_library
+  end
+
   # aka download
   def download
     set_library
-    
-    # file = @library.texts.to_json
-    # send_data( 
-    #   file,
-    #   filename: "#{@library.name}.json" 
-    # )
+
+    file = @library.to_export_json
+    send_data( 
+      file,
+      type: 'application/json',
+      filename: "#{@library.name}.json"
+    )
   end
 
   private
 
   def set_library
-    puts params.to_unsafe_hash
     @library = Library.find(
       params.require(:library_id)
     )

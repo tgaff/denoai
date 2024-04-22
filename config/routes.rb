@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  resources :json_exports, only: [:index], param: :library_id do
-    collection do 
+  resources :json_exports, only: [:index, :show], param: :library_id do
+    member do 
       get 'download'
     end
   end

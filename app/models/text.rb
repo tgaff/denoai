@@ -25,4 +25,9 @@ class Text < ApplicationRecord
   after_save :upsert_to_vectorsearch
 
   belongs_to :library
+
+  # for use on the collection of Texts
+  def self.to_export_json
+    select(:name, :content, :source_type).to_json
+  end
 end

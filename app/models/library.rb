@@ -14,4 +14,6 @@
 class Library < ApplicationRecord
   has_many :texts, dependent: :destroy
   has_many :chats, dependent: :destroy
+
+  delegate :to_export_json, to: :texts
 end
