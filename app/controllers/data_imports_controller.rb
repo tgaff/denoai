@@ -29,40 +29,50 @@ class DataImportsController < ApplicationController
   }
   # POST /data_imports
   def create
-    puts "---------------------------------"
-    # puts import_type_param
-    puts params.to_unsafe_hash
+    if import_type_param == JSON_IMPORT
+      Rails.logger.debug(" JSON IMPORT ")
+      @library = Library.find(direct_import_params[:library])
+      begin
+        Rails.logger.info JSON.parse(direct_import_params[:json])
+      rescue StandardError =>  e
+        puts e
+        return unprocessable_entity(notice: "Invalid JSON")
+      end
+      # do something with the json here
+      return handle_json_import
+    elsif import_type_param == RUN_TASK
+      Rails.logger.debug(" RUN TASK IMPORT ")
 
-    # doing something weird - successful paths should throw done or 
-    # we'll render unprocessable_entity
-    catch(:done) do
-      if import_type_param == JSON_IMPORT
-        @library = Library.find(direct_import_params[:library])
-        begin
-          Rails.logger.info JSON.parse(direct_import_params[:json])
-        rescue StandardError =>  e
-          puts e
-          render :index, status: :unprocessable_entity
-        end
-        # do something with the json here
-        redirect_to data_imports_path, notice: "Thanks for JSON"
+      task = ALLOWED_WORK_MAPPINGS[task_params&.to_sym]
 
-        throw(:done)
-      elsif import_type_param == RUN_TASK
-        task = ALLOWED_WORK_MAPPINGS[task_params&.to_sym]
-
-        if task.present?
-          # task.perform_later
-          redirect_to data_imports_path, notice: "Task enqueued"
-        else
-          render :index, status: :unprocessable_entity
-        end
-        throw(:done)
+      if task.present?
+        task.perform_later
+        return redirect_to data_imports_path, notice: "Task enqueued"
+      else
+        return unprocessable_entity
       end
 
-      # fallback if neither option gets a "done"
-      render :index, status: :unprocessable_entity
+    else # we don't know what type of import you're talking about
+      return unprocessable_entity
     end
+  end
+  
+  def unprocessable_entity(notice: nil)
+    # fallback if neither option gets a "done"
+    @libraries = Library.all.select(:id, :name)
+
+    flash[:notice] = notice if notice
+    render :index, status: :unprocessable_entity
+  end
+
+  def handle_json_import
+    json = direct_import_params[:json]
+    if JsonImportJob.is_valid_json?(json)
+      JsonImportJob.perform_later(json: json, library_id: @library.id)
+
+      return redirect_to data_imports_path, notice: "Thanks for JSON"
+    end
+    unprocessable_entity(notice: "JSON not valid, or contains incorrect keys")
   end
 
   # PATCH/PUT /data_imports/1
