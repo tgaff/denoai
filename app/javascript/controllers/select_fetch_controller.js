@@ -6,7 +6,7 @@ import { Turbo } from "@hotwired/turbo-rails"
 export default class extends Controller {
 
   static values = {
-    url: String, // a template for the URL to gen.  :id will be replaced with the value of this elem
+    url: String, // a template for the URL: :id will be replaced with the value of this controller's elem
     frameId: String // used to determine which turbo-frame to load the fetch into
   }
 
@@ -18,7 +18,7 @@ export default class extends Controller {
     const selectedLibraryId = this.element.value;    
     const frameId = this.frameIdValue;
     const url = this.composeURL();
-
+    
     if (selectedLibraryId && frameId && url) {
       Turbo.visit(url, { action: 'replace', frame: frameId });
     }

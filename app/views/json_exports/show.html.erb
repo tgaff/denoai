@@ -1,3 +1,3 @@
-<%= turbo_frame_tag 'show_download' do %>
+<%= turbo_frame_tag 'show_download' do %> 
   <%= link_to "Download", download_json_export_path(@library.id), class: "text-blue-600 underline visited:text-purple-600", data: { turbo: false } %>
 <% end %>

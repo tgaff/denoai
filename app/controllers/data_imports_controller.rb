@@ -58,7 +58,6 @@ class DataImportsController < ApplicationController
   end
   
   def unprocessable_entity(notice: nil)
-    # fallback if neither option gets a "done"
     @libraries = Library.all.select(:id, :name)
 
     flash[:notice] = notice if notice
