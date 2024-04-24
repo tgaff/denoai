@@ -1,21 +1,22 @@
 <%= turbo_frame_tag 'data_exports',target: '_top' do %>
-  <div class="flex flex-col basis-4 justify-between items-start ">
+  <div class="flex flex-col basis-4 justify-between items-start  pt-4">
     <h1 class="font-bold text-4xl block py-3">JSON downloads</h1>
-
-    <%= label_tag :library_id, "Select a Library", class: "block px-5 text-sm font-medium text-gray-700" %>
-    <%= select_tag :library_id, 
-                   options_from_collection_for_select(@libraries, "id", "name"),
-                       :include_blank => true , 
-                   id: "library_select", 
-                   class: "rounded-md my-4 py-3 px-5 text-blue-600 block font-medium min-w-80",
-                   data: { 
-                    controller: 'select-fetch',
-                    action: "change->select-fetch#change",
-                    "select-fetch-frame-id-value": "show_download",
-                    "select-fetch-url-value": "#{json_exports_path}/:id"
-                  } 
-    %>
-
-    <%= turbo_frame_tag :show_download %>
+    <p>Use this to download Text records for a Library and upload to another server.</p>
+    <div class="py-4">
+      <%= label_tag :library_id, "Select a Library", class: "block px-1 text-sm font-medium text-gray-700" %>
+      <%= select_tag :library_id, 
+                    options_from_collection_for_select(@libraries, "id", "name"),
+                        :include_blank => true , 
+                    id: "library_select", 
+                    class: "rounded-md my-1 mb-4 py-3 px-5 text-blue-600 block font-medium min-w-80",
+                    data: { 
+                      controller: 'select-fetch',
+                      action: "change->select-fetch#change",
+                      "select-fetch-frame-id-value": "show_download",
+                      "select-fetch-url-value": "#{json_exports_path}/:id"
+                    } 
+      %>
+      <%= turbo_frame_tag :show_download %>
+    </div>
   </div>
 <% end %>
