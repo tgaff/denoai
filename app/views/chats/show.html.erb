@@ -5,16 +5,16 @@
   <div class="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
     <div class="relative flex items-center space-x-4">
       <div class="flex flex-col leading-tight">
-        <span class="text-lg text-gray-600">Support chat for</span>
+        <span class="text-lg text-gray-600">Chat topic:</span>
         <div class="text-2xl mt-1 flex items-center">
           <span class="text-gray-700 mr-3"><%= @chat.title %></span>
         </div>
       </div>
     </div>
     <div class="flex items-center space-x-2">
-      <button type="button" class="inline-flex items-center justify-center rounded-lg border h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+      <%= link_to chats_path, class:"inline-flex items-center justify-center rounded-lg border h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none" do %>
         <%= heroicon "x-mark" %>
-      </button>
+      <% end %>
     </div>
   </div>
 
