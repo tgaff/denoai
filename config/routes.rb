@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   resources :chats do
     resources :messages, only: [:create]
   end
+  resources :lz_chats do
+    resources :messages, only: [:create]
+  end
+
   resources :data_imports, only: [:create, :index, :new, :show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -18,5 +22,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   mount GoodJob::Engine => 'good_job'
-  root "chats#index"
+  root "lz_chats#new"
 end

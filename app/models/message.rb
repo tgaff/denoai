@@ -52,7 +52,7 @@ class Message < ApplicationRecord
     end
     context = context.join("\n---\n")
 
-    prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text, context: context)
+    prompt = Langchain::Vectorsearch::Base.new(llm: llm).generate_rag_prompt(question: text + "(be concise)", context: context)
 
     messages = [{role: "user", content: prompt}] + convo
     response = llm.chat(messages: messages)
