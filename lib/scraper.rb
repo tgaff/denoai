@@ -36,7 +36,7 @@ class Scraper
     end
   end
 
-  private
+  # private
 
   def logger
     Rails.logger
@@ -69,9 +69,17 @@ class Scraper
         @link_inclusion_patterns.any? { |pat| link.match pat }
       end
     end
-    temp.filter do |link|
+    temp.filter! do |link|
       @link_exclusion_patterns.none? { |exclusion_pattern| link.match exclusion_pattern }
     end
+    puts "VALIDATED LINKS"
+    puts "#{temp.join("\n")}"
+    puts "------------------"
+    puts "removed..."
+    removed = links - temp
+    puts removed.join("\n")
+    puts "------------------"
+
     temp
   end
 end
@@ -93,7 +101,7 @@ class PageReader
     begin
       visit url
     rescue Ferrum::PendingConnectionsError
-      logger.warn "page didn't load in time, retrying: '#{url}'"
+      Rails.logger.warn "page didn't load in time, retrying: '#{url}'"
       sleep 0.5
       visit url
     end
@@ -107,10 +115,23 @@ class PageReader
   end
 
   def text
-    all('div', wait: 30) # just to ensure its ready
-    body = find("body")
-    body.text # just to ensure page is ready
-
+    body = nil
+    catch(:page_load_complete) do
+      10.times do
+        begin 
+          all('div', wait: 30) # just to ensure its ready
+          body = find("body")
+          body.text # just to ensure page is ready
+          throw(:page_load_complete) # we got this far, so no more retries
+        rescue Ferrum::NodeNotFoundError => e
+          Rails.logger.warn "Ferrum::NodeNotFoundError"
+          Rails.logger.warn e
+          Rails.logger.warn "---------------------------"
+        end
+      end
+      Rails.logger.error("tried 10 times and couldn't load")
+      fail "giving up"
+    end
     locators = ['div.content', 'article', 'section']
     possible_content_nodes = []
 

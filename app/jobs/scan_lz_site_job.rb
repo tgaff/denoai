@@ -9,7 +9,7 @@ class ScanLzSiteJob < ApplicationJob
     
     delete_old_web_scans
 
-    url = "https://qa.labzero.com"
+    url = "https://labzero.com"
     texts = fetch_texts_from_web(url)
 
     # texts should be a hash of title -> text
@@ -20,8 +20,8 @@ class ScanLzSiteJob < ApplicationJob
   end
 
   def fetch_texts_from_web(url)
-    exclusion_patterns = ["unsplash.com", /twitter/]
-    s = Scraper.new(url, link_exclusion_patterns: exclusion_patterns, link_inclusion_patterns: ['qa.labzero.com'])
+    exclusion_patterns = ["unsplash.com", /twitter/, /guides\.labzero\.com/]
+    s = Scraper.new(url, link_exclusion_patterns: exclusion_patterns, link_inclusion_patterns: ['labzero.com'])
     s.scrape(limit: LIMIT)
   
     s.texts.each do |t|
@@ -31,6 +31,6 @@ class ScanLzSiteJob < ApplicationJob
   end
   
   def delete_old_web_scans
-    @library.texts.where('name like ?', "Guides:%").destroy_all
+    @library.texts.where.not('name like ?', "Guides:%").destroy_all
   end
 end
