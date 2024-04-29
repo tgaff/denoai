@@ -20,7 +20,7 @@ class ScanLzSiteJob < ApplicationJob
   end
 
   def fetch_texts_from_web(url)
-    exclusion_patterns = ["unsplash.com", /twitter/, /guides\.labzero\.com/]
+    exclusion_patterns = ["unsplash.com", /twitter/, /guides\.labzero\.com/, 'mailto:', 'ftp://']
     s = Scraper.new(url, link_exclusion_patterns: exclusion_patterns, link_inclusion_patterns: ['labzero.com'])
     s.scrape(limit: LIMIT)
   

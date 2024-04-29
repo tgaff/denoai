@@ -36,7 +36,7 @@ class Scraper
     end
   end
 
-  # private
+  private
 
   def logger
     Rails.logger
