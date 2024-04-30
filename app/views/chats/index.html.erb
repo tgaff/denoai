@@ -8,6 +8,27 @@
     <%= link_to "New chat", new_chat_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
   </div>
 
+  <div class="relative py-5">
+    <section class="mt-16 text-left">
+      <div data-controller="dropdown" class="relative">
+        <button type="button" data-action="dropdown#toggle click@window->dropdown#hide" class="rounded-md py-3 px-5 text-blue-600 block font-medium border border-gray-300">Library Filter</button>
+
+        <div
+          data-dropdown-target="menu"
+          class="hidden transition transform origin-top-left absolute left-0 "
+          data-transition-enter-from="opacity-0 scale-95"
+          data-transition-enter-to="opacity-100 scale-100"
+          data-transition-leave-from="opacity-100 scale-100"
+          data-transition-leave-to="opacity-0 scale-95"
+        >
+          <% @libraries.each do |lib| %>
+            <%= link_to lib.name, chats_path(library_filter: lib.id), class: "bg-gray-200 text-blue-600 block px-4 py-2 text-sm" %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+  
   <div id="chats" class="min-w-full">
     <%= render @chats %>
   </div>

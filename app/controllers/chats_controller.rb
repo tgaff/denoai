@@ -4,7 +4,11 @@ class ChatsController < ApplicationController
 
   # GET /chats or /chats.json
   def index
-    @chats = Chat.all
+    if library_filter.present?
+      @chats = Chat.where(library_id: library_filter).order(created_at: :desc)
+    else
+      @chats = Chat.all.order(created_at: :desc)
+    end
   end
 
   # GET /chats/1 or /chats/1.json
@@ -72,5 +76,9 @@ class ChatsController < ApplicationController
 
     def set_libraries
       @libraries = Library.all
+    end
+
+    def library_filter
+      params['library_filter']
     end
 end
